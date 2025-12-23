@@ -1,3 +1,3 @@
-/node_modules/
-/lib/
-.bsb.lock
+/rescript/node_modules/
+/rescript/lib/
+/rescript/.bsb.lock
