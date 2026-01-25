@@ -10,33 +10,45 @@ function App() {
   const timelineData = [
     {
       title: "Started My Journey",
-      date: "January 2024",
-      description: "Began working on exciting new projects and learning new technologies.",
+      date: "April 2015",
+      description: "Started my IT career as a Business Intelligence intern at Haworth (Office furniture manufacturer)",
+      details: "Worked with SQL databases, created reports and dashboards, and learned the basics of data analysis and visualization.",
       position: 'right' as const
     },
     {
-      title: "Major Milestone",
-      date: "March 2024",
-      description: "Completed a significant project that pushed my skills to the next level.",
+      title: "Next Internship",
+      date: "April 2016",
+      description: "BI was interesting but I realized I was lacking an understanding of the fundamentals of IT. Decided to take a new internship at Padnos Recycling Solutions working on the IT Help Desk.",
+      details: "Gained hands-on experience with troubleshooting, user support, network infrastructure, and learned the importance of customer service in IT.",
       position: 'left' as const
     },
     {
-      title: "New Adventure",
-      date: "June 2024",
-      description: "Started exploring new frameworks and methodologies in web development.",
+      title: "Full Time IT Career",
+      date: "May 2017",
+      description: "Started working on the IT Service Desk at Service Express.",
+      details: "Provided technical support for enterprise customers, managed ticketing systems, and developed strong problem-solving skills in a fast-paced environment.",
       position: 'right' as const
     },
     {
-      title: "Achievement Unlocked",
-      date: "September 2024",
-      description: "Reached a personal goal and gained valuable experience along the way.",
+      title: "Promoted to Systems Administrator",
+      date: "September 2020",
+      description: "Advanced to Systems Administrator role, taking on more infrastructure responsibilities.",
+      details: "Managed server infrastructure, implemented automation solutions, worked with virtualization technologies, and gained experience with cloud platforms.",
       position: 'left' as const
     },
     {
-      title: "Current Focus",
+      title: "IT Analyst at MillerKnoll",
+      date: "December 2023",
+      description: "Joined MillerKnoll as an IT Analyst to broaden my experience.",
+      details: "Worked on enterprise IT projects, collaborated with cross-functional teams, and gained exposure to large-scale corporate IT operations.",
+      position: 'right' as const
+    },
+    {
+      title: "Back at Service Express",
       date: "December 2024",
-      description: "Working on innovative solutions and building amazing user experiences.",
-      position: 'right' as const
+      description: "Started as an Infrastructure Automation Engineer at Service Express.",
+      details: "Focusing on infrastructure as code, CI/CD pipelines, automation frameworks, and modern DevOps practices to streamline operations.",
+      position: 'left' as const
     }
   ]
 
@@ -58,6 +70,7 @@ function App() {
                 title={item.title}
                 date={item.date}
                 description={item.description}
+                details={item.details}
                 position={item.position}
               />
             ))}
