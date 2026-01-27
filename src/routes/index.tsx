@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import TimelineCard from '../components/TimelineCard.tsx'
+import ProjectCard from '../components/ProjectCard.tsx'
 import timelineData from '../data/timeline.json'
 
 export const Route = createFileRoute('/')({
@@ -13,7 +14,12 @@ function App() {
       {/* Hero/About Section */}
       <section id="about" className="flex items-center justify-center bg-white px-4 pt-40">
         <div className="max-w-3xl mx-auto">
-          <div className="mb-8">
+          <div className="flex flex-col items-center mb-8">
+            <img 
+              src="/headshot.jpg" 
+              alt="Trevor Edewaard" 
+              className="w-32 h-32 rounded-full object-cover object-top mb-6 shadow-lg"
+            />
             <h1 className="text-4xl font-mono font-bold text-gray-900 mb-2">
               Trevor Edewaard
             </h1>
@@ -35,58 +41,94 @@ function App() {
         </div>
       </section>
 
-      {/* Projects Section */}
-      <section id="projects" className="py-20 px-4 bg-white">
+      {/* Work Projects Section */}
+      <section id="work-projects" className="py-20 px-4 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold text-gray-900 mb-4 text-center">
-            Technical Projects
+            Work Projects & Accomplishments
           </h2>
           <p className="text-gray-600 text-center mb-12">
-            Side projects and experiments I've been working on
+            Professional achievements and contributions
           </p>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Project Card 1 */}
-            <div className="bg-gray-50 rounded-lg p-6 shadow-md hover:shadow-xl transition-shadow">
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
-                Project Name
-              </h3>
-              <p className="text-gray-600 mb-4">
-                Brief description of what this project does and the technologies used.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">React</span>
-                <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">Node.js</span>
-              </div>
-            </div>
+            <ProjectCard 
+              title="On-prem Kubernetes (RKE2)"
+              description="Re-architected our 5 year old on-prem Kubernetes clusters, enabling simplified disaster recovery, continuous
+updates and automated cluster deployment reducing our RTO by over 90%."
+              technologies={[
+                { name: 'Kubernetes (RKE2)', color: 'purple' },
+                { name: 'Terraform', color: 'indigo' },
+                { name: 'Ansible', color: 'blue' },
+              ]}
+            />
 
-            {/* Project Card 2 */}
-            <div className="bg-gray-50 rounded-lg p-6 shadow-md hover:shadow-xl transition-shadow">
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
-                Another Project
-              </h3>
-              <p className="text-gray-600 mb-4">
-                Description of another cool project you've built.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">Python</span>
-                <span className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm">Docker</span>
-              </div>
-            </div>
+            <ProjectCard 
+              title="Infrastructure as Code"
+              description="Established Infrastructure as Code (IaC) practices using Terraform, Ansible, and GitLab CI/CD for VM
+provisioning, Kubernetes configuration, Route53, and F5 management."
+              technologies={[
+                { name: 'Terraform', color: 'indigo' },
+                { name: 'Ansible', color: 'blue' },
+                { name: 'GitLab CI/CD', color: 'green' },
+              ]}
+            />
 
-            {/* Project Card 3 */}
-            <div className="bg-gray-50 rounded-lg p-6 shadow-md hover:shadow-xl transition-shadow">
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
-                Third Project
-              </h3>
-              <p className="text-gray-600 mb-4">
-                Yet another interesting project showcasing your skills.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm">Terraform</span>
-                <span className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm">AWS</span>
-              </div>
-            </div>
+            <ProjectCard 
+              title="VM and Endpoint Life Cycle Management"
+              description="Managed comprehensive lifecycle operations for VM infrastructure and 1,000+ workstations, including
+vulnerability remediation and third-party application management, which removed thousands of known
+exploitable vulnerabilities from the environment."
+              technologies={[
+                { name: 'Datto', color: 'indigo' },
+                { name: 'VMware', color: 'red' },
+              ]}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Side Projects Section */}
+      <section id="side-projects" className="py-20 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-4xl font-bold text-gray-900 mb-4 text-center">
+            Side Projects
+          </h2>
+          <p className="text-gray-600 text-center mb-12">
+            Personal projects and experiments
+          </p>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <ProjectCard 
+              title="Dwanium"
+              description="Service to import Dell PC warranty end dates into Tanium Asset"
+              technologies={[
+                { name: 'Rust', color: 'blue' },
+                { name: 'Docker', color: 'green' },
+                { name: 'Postgres', color: 'purple' }
+              ]}
+              link="https://github.com/tedewaard/dwanium"
+            />
+
+            <ProjectCard 
+              title="Lenovium"
+              description="Service to import Lenovo PC warranty end dates into Tanium Asset"
+              technologies={[
+                { name: 'Typescript', color: 'yellow' }
+              ]}
+              link="https://github.com/tedewaard/lenovium"
+            />
+
+            <ProjectCard 
+              title="Edewaard Equipment"
+              description="Website for Edewaard Equipment - Hudsonville, MI"
+              technologies={[
+                { name: 'Typescript', color: 'yellow' },
+                { name: 'HTML/CSS', color: 'indigo' }
+              ]}
+              link="https://github.com/tedewaard/EER"
+              websiteLink='https://edewaardequipment.com'
+            />
           </div>
         </div>
       </section>
