@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import TimelineCard from '../components/TimelineCard.tsx'
 import ProjectCard from '../components/ProjectCard.tsx'
+import Footer from '../components/Footer.tsx'
 import timelineData from '../data/timeline.json'
 
 export const Route = createFileRoute('/')({
@@ -30,12 +31,19 @@ function App() {
           
           <div className="space-y-4 text-gray-700 leading-relaxed">
             <p>
-              I build and automate infrastructure. Currently working with Terraform, CI/CD pipelines, 
-              and cloud platforms to make systems more reliable and deployments faster.
+              I'm an infrastructure engineer focused on building resilient, automated systems at scale. 
+              Currently architecting Kubernetes platforms, implementing GitOps workflows, and automating 
+              infrastructure with Terraform and Ansible.
             </p>
             <p>
-              Started in BI, moved through help desk and sysadmin roles, now focused on infrastructure as code 
-              and DevOps tooling. I like solving problems with automation instead of manual processes.
+              My work includes designing on-premises Kubernetes infrastructure that reduced disaster recovery 
+              time by over 90%, managing 12,000+ global endpoints, and establishing Infrastructure as Code 
+              practices across VM provisioning, network automation, and cloud resources.
+            </p>
+            <p>
+              I've led major migrations—moving 1,000+ endpoints to Microsoft Intune, consolidating 50 cloud 
+              apps to Entra SSO, and retiring legacy systems that had been in place for 20 years. I also spoke 
+              at Tanium Converge 2023 and build tooling in Rust, Go, and PowerShell to solve real business problems.
             </p>
           </div>
         </div>
@@ -165,25 +173,7 @@ exploitable vulnerabilities from the environment."
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 px-4">
-        <div className="max-w-6xl mx-auto text-center">
-          <p className="text-gray-400 mb-4">
-            Let's connect
-          </p>
-          <div className="flex justify-center gap-6">
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">
-              GitHub
-            </a>
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">
-              LinkedIn
-            </a>
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">
-              Email
-            </a>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }
