@@ -9,7 +9,7 @@ export default function Header() {
           <a href="#about" className="text-gray-600 hover:text-gray-900 transition-colors">
             About
           </a>
-          <a href="#projects" className="text-gray-600 hover:text-gray-900 transition-colors">
+          <a href="#work-projects" className="text-gray-600 hover:text-gray-900 transition-colors">
             Projects
           </a>
           <a href="#timeline" className="text-gray-600 hover:text-gray-900 transition-colors">
