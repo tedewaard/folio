@@ -5,8 +5,8 @@ import Footer from '../../components/Footer'
 // Import blog posts metadata
 const blogPosts = [
   {
-    slug: 'welcome',
-    title: 'Welcome to My Blog',
+    slug: 'terraform-esxi',
+    title: 'VMware, Cloud-Init & Terraform',
     date: '2026-01-27',
     excerpt: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
     tags: ['meta', 'welcome'],

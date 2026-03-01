@@ -11,7 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BlogIndexRouteImport } from './routes/blog/index'
-import { Route as BlogWelcomeRouteImport } from './routes/blog/welcome'
+import { Route as BlogTerraformEsxiRouteImport } from './routes/blog/terraform-esxi'
+import { Route as BlogIngressNginxRouteImport } from './routes/blog/ingress-nginx'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -23,39 +24,53 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
   path: '/blog/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BlogWelcomeRoute = BlogWelcomeRouteImport.update({
-  id: '/blog/welcome',
-  path: '/blog/welcome',
+const BlogTerraformEsxiRoute = BlogTerraformEsxiRouteImport.update({
+  id: '/blog/terraform-esxi',
+  path: '/blog/terraform-esxi',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogIngressNginxRoute = BlogIngressNginxRouteImport.update({
+  id: '/blog/ingress-nginx',
+  path: '/blog/ingress-nginx',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/blog/welcome': typeof BlogWelcomeRoute
+  '/blog/ingress-nginx': typeof BlogIngressNginxRoute
+  '/blog/terraform-esxi': typeof BlogTerraformEsxiRoute
   '/blog/': typeof BlogIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/blog/welcome': typeof BlogWelcomeRoute
+  '/blog/ingress-nginx': typeof BlogIngressNginxRoute
+  '/blog/terraform-esxi': typeof BlogTerraformEsxiRoute
   '/blog': typeof BlogIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/blog/welcome': typeof BlogWelcomeRoute
+  '/blog/ingress-nginx': typeof BlogIngressNginxRoute
+  '/blog/terraform-esxi': typeof BlogTerraformEsxiRoute
   '/blog/': typeof BlogIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/blog/welcome' | '/blog/'
+  fullPaths: '/' | '/blog/ingress-nginx' | '/blog/terraform-esxi' | '/blog/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/blog/welcome' | '/blog'
-  id: '__root__' | '/' | '/blog/welcome' | '/blog/'
+  to: '/' | '/blog/ingress-nginx' | '/blog/terraform-esxi' | '/blog'
+  id:
+    | '__root__'
+    | '/'
+    | '/blog/ingress-nginx'
+    | '/blog/terraform-esxi'
+    | '/blog/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  BlogWelcomeRoute: typeof BlogWelcomeRoute
+  BlogIngressNginxRoute: typeof BlogIngressNginxRoute
+  BlogTerraformEsxiRoute: typeof BlogTerraformEsxiRoute
   BlogIndexRoute: typeof BlogIndexRoute
 }
 
@@ -75,11 +90,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/blog/welcome': {
-      id: '/blog/welcome'
-      path: '/blog/welcome'
-      fullPath: '/blog/welcome'
-      preLoaderRoute: typeof BlogWelcomeRouteImport
+    '/blog/terraform-esxi': {
+      id: '/blog/terraform-esxi'
+      path: '/blog/terraform-esxi'
+      fullPath: '/blog/terraform-esxi'
+      preLoaderRoute: typeof BlogTerraformEsxiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/ingress-nginx': {
+      id: '/blog/ingress-nginx'
+      path: '/blog/ingress-nginx'
+      fullPath: '/blog/ingress-nginx'
+      preLoaderRoute: typeof BlogIngressNginxRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -87,7 +109,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  BlogWelcomeRoute: BlogWelcomeRoute,
+  BlogIngressNginxRoute: BlogIngressNginxRoute,
+  BlogTerraformEsxiRoute: BlogTerraformEsxiRoute,
   BlogIndexRoute: BlogIndexRoute,
 }
 export const routeTree = rootRouteImport
