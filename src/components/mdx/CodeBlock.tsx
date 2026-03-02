@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Copy, Check } from 'lucide-react'
+import hljs from 'highlight.js'
 
 interface CodeBlockProps {
   children: string
@@ -9,6 +10,13 @@ interface CodeBlockProps {
 
 export default function CodeBlock({ children, language, title }: CodeBlockProps) {
   const [copied, setCopied] = useState(false)
+  const codeRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    if (codeRef.current && language) {
+      hljs.highlightElement(codeRef.current)
+    }
+  }, [children, language])
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(children)
@@ -29,7 +37,7 @@ export default function CodeBlock({ children, language, title }: CodeBlockProps)
       <div className="relative">
         <button
           onClick={handleCopy}
-          className="absolute top-3 right-3 p-2 rounded bg-gray-800 hover:bg-gray-700 transition-colors"
+          className="absolute top-3 right-3 p-2 rounded hover:bg-gray-700 transition-colors z-10"
           aria-label="Copy code"
         >
           {copied ? (
@@ -39,7 +47,7 @@ export default function CodeBlock({ children, language, title }: CodeBlockProps)
           )}
         </button>
         <pre className="p-4 overflow-x-auto">
-          <code className={language ? `language-${language}` : ''}>
+          <code ref={codeRef} className={language ? `language-${language}` : ''}>
             {children}
           </code>
         </pre>

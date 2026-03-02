@@ -46,33 +46,42 @@ function TerraformEsxi() {
         to build our templates. But I'd rather keep the template as lean as possible and handle the customization 
         with cloud-init and ansible. Second, the bash script used for additional configuration is just not it. 
         Any changes to the script would need to be updated in the template, but more importantly, the script requires
-        user interaction and manually entering information, which was just begging for errors.
+        user interaction and manually entering information, which was just begging for fat finger errors.
+        Additionally, it meant I couldn't spin up multiple VMs and configure them at the same time. I'd have 
+        go one by one, which takes time when you're trying to spin up a 10 node Kubernetes cluster.
+      </p>
+      <p>
+        The solution is a combination of 3 tools - terraform, cloud-init and ansible. Configurations for all
+        three can live in version control, giving us the ability to iterate and rollback if needed. It also makes
+        everything repeatable, consistent and clearly documents what's happening (this has been handy for compliance).
+        Finally, it's so much faster. 
       </p>
 
-      <h2>Spinning Up VMs With Terraform</h2>
+      <h2>The Implementation</h2>
 
-      <ul>
-        <li><strong>Infrastructure as Code:</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit</li>
-        <li><strong>Kubernetes:</strong> Sed do eiusmod tempor incididunt ut labore et dolore</li>
-        <li><strong>CI/CD Pipelines:</strong> Ut enim ad minim veniam, quis nostrud exercitation</li>
-        <li><strong>Cloud Platforms:</strong> Duis aute irure dolor in reprehenderit in voluptate</li>
-      </ul>
-
-      <h2>Code Examples</h2>
+      <h3>Cloud-Init</h3>
 
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Here's an example of what code blocks will look like:
+        We still need the VM template to clone our new VMs from, but we will only configure cloud-init.
+        Which, looks like the following:
       </p>
 
-      <CodeBlock language="terraform" title="main.tf">
-        {`resource "aws_instance" "example" {
-ami           = "ami-0c55b159cbfafe1f0"
-instance_type = "t2.micro"
-
-tags = {
-Name = "ExampleInstance"
-}
-}`}
+      <CodeBlock language="yaml" title="cloud.cfg">
+      {`
+      #Add the following line:
+      disable_vmware_customization: false
+      #Comment out the following lines using a # like below:
+      #Users:
+      #  - default
+        # Default user name + that default users groups (if added/used)
+        #default_user:
+        #  name: ubuntu
+        #  lock_passwd: True
+        #  gecos: Ubuntu
+        #  groups: [adm, audio, cdrom, dialout, dip, floppy, lxd, netdev, plugdev, sudo, video]
+        #  sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+        #  shell: /bin/bash
+        `}
       </CodeBlock>
 
       <Callout type="tip" title="Pro Tip">
