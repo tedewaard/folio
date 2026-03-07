@@ -8,7 +8,7 @@ const blogPosts = [
     slug: 'terraform-esxi',
     title: 'VMware, Cloud-Init & Terraform',
     date: '2026-01-27',
-    excerpt: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    excerpt: 'Deploying linux VMs in VMware using cloud-init, terraform and ansible.',
     tags: ['meta', 'welcome'],
     readingTime: '3 min read',
   },

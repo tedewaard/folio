@@ -47,7 +47,7 @@ function TerraformEsxi() {
         with cloud-init and ansible. Second, the bash script used for additional configuration is just not it. 
         Any changes to the script would need to be updated in the template, but more importantly, the script requires
         user interaction and manually entering information, which was just begging for fat finger errors.
-        Additionally, it meant I couldn't spin up multiple VMs and configure them at the same time. I'd have 
+        Additionally, it meant I couldn't spin up multiple VMs and configure them at the same time. I'd have to
         go one by one, which takes time when you're trying to spin up a 10 node Kubernetes cluster.
       </p>
       <p>
@@ -66,59 +66,274 @@ function TerraformEsxi() {
         Which, looks like the following:
       </p>
 
-      <CodeBlock language="yaml" title="cloud.cfg">
-      {`
-      #Add the following line:
-      disable_vmware_customization: false
-      #Comment out the following lines using a # like below:
-      #Users:
-      #  - default
-        # Default user name + that default users groups (if added/used)
-        #default_user:
-        #  name: ubuntu
-        #  lock_passwd: True
-        #  gecos: Ubuntu
-        #  groups: [adm, audio, cdrom, dialout, dip, floppy, lxd, netdev, plugdev, sudo, video]
-        #  sudo: ["ALL=(ALL) NOPASSWD:ALL"]
-        #  shell: /bin/bash
+      <p>First, we need to tell cloud-init that our <a href="https://docs.cloud-init.io/en/latest/reference/datasources/vmware.html">datasource</a> is VMware and we are using Guest OS 
+        Customization by adding the following file in /etc/cloud/cloud.cfg.d:
+      </p>
+
+      <CodeBlock language="yaml" title="99-vmware-guest-customization.cfg">
+        {`datasource:
+  VMware:
+    vmware_cust_file_max_wait: 10
         `}
       </CodeBlock>
 
-      <Callout type="tip" title="Pro Tip">
-        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </Callout>
-
-      <h2>Looking Forward</h2>
-
       <p>
-        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, 
-        eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+        Then, in the cloud.cfg file that already exists we want to comment out the default
+        user lines. We will be injecting our own base user in our cloud-init userdata via Terraform.
       </p>
 
-      <blockquote>
-        <p>
-          "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores 
-          eos qui ratione voluptatem sequi nesciunt."
-        </p>
-      </blockquote>
+      <CodeBlock language="yaml" title="cloud.cfg">
+      {`#Add the following line:
+disable_vmware_customization: false
+#Comment out the following lines using a # like below:
+#Users:
+#  - default
+  # Default user name + that default users groups (if added/used)
+  #default_user:
+  #  name: ubuntu
+  #  lock_passwd: True
+  #  gecos: Ubuntu
+  #  groups: [adm, audio, cdrom, dialout, dip, floppy, lxd, netdev, plugdev, sudo, video]
+  #  sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+  #  shell: /bin/bash
+        `}
+      </CodeBlock>
 
       <p>
-        Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam 
-        eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.
+        Now, we run the following commands to make sure the VM is ready for Cloud-Init 
+        and we have a clean run on next boot:
       </p>
+      
+      <CodeBlock language="bash" title="cloud.cfg">
+{`sudo rm -rf /var/lib/cloud/*
+sudo rm /var/lib/cloud-init/*
+sudo cloud-init clean --machine-id
 
-      <h3>Final Thoughts</h3>
+`}
+      </CodeBlock>
 
       <p>
-        Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea 
-        commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae 
-        consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?
+        Once we've made a template from our VM we are ready to move on to Terraform,
+        which will be the tool used to define our VMs and trigger their provisioning in 
+        VMware. 
       </p>
 
-      <Callout type="warning">
-        At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque 
-        corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.
-      </Callout>
+      <h3>Terraform</h3>
+      
+      <p>The VMware provider for Terraform is pretty straight forward -
+         <a href="https://registry.terraform.io/providers/vmware/vsphere/latest/docs"> vSphere Provider</a>.
+      But what I want to touch on is how to go about injecting your cloud-init metadata
+        so that you can set the network config via cloud-init and any other configurations
+        you want to add like users and groups. Below is a vsphere_virtual_machine resource
+        with most arguments removed since I just want to highlight the 'extra_config'
+        argument. I can pass extra guestinfo properties like metadata, and userdata. 
+        I supply the yaml, which is jsonencoded and then base64encoded. The metadata and
+        user data allow me to set the IP configuration, some base packages to be installed 
+        and users/groups that I want. 
+      </p>
+
+      <CodeBlock language="javascript" title="main.tf">
+{`
+resource "vsphere_virtual_machine" "vm" {
+
+  extra_config = {
+    "guestinfo.metadata" = base64encode(jsonencode({
+      instance-id    = each.key
+      local-hostname = each.value.hostname
+      network = {
+        version = 2
+        ethernets = {
+          any_ens = {
+            match = {
+              name = "ens*"
+            }
+            addresses = ["\${each.value.ip_address}/\${var.subnet}"]
+            gateway4  = var.gateway
+            nameservers = {
+              addresses = ["10.1.22.20", "10.1.22.21"]
+              search    = ["domain.com"]
+            }
+          }
+        }
+      }
+      }
+    ))
+    "guestinfo.metadata.encoding" = "base64"
+    "guestinfo.userdata" = base64encode(<<EOF
+        #cloud-config
+        package_update: true
+        package_upgrade: true
+        packages:
+        - firewalld
+        - snmpd
+        groups:
+          - testgroup: [test]
+        users:
+          - name: test
+            gecos: test
+            primary_group: test
+            groups: [sudo, testgroup]
+            lock_passwd: false
+            hashed_passwd: >-
+              <hashed password here>
+            shell: /bin/bash
+        EOF
+    )
+    "guestinfo.userdata.encoding" = "base64"
+  }
+}
+`}
+      </CodeBlock>
+
+      <p>You'll also notice that within my guestinfo.metadata I'm passing in variables. 
+        These variables are coming from a map of objects, where each object represents 
+        a VM configuration:
+      </p>
+
+      <CodeBlock language='javascript' title='variables.tf'>
+{`variable "vm_configs" {
+    type = map(object({
+        hostname =  string
+        ip_address = string
+        datastore = string
+        disks = list(object({
+            label = string
+            size = number
+        }))
+        mem = number
+        cpu = number
+    }))
+}`}
+      </CodeBlock>
+
+      <p>If I want to spin up 3 VMs I simply pass a vm_configs map of my VM attributes like the following:</p>
+
+      <CodeBlock language='javascript' title='main.tf'>
+ {`         
+vm_configs = {
+    "VM1" = {
+      hostname   = "VM1"
+      ip_address = "10.1.122.100"
+      datastore = "dstore-1"
+      disks      = [
+        {
+            label = "disk0"
+            size = 60
+        },
+        {
+            label = "disk1"
+            size = 500
+        }
+      ]
+      mem        = 8192
+      cpu        = 3
+    }
+    "VM2" = {
+      hostname = "VM2"
+      ip_address = "10.1.122.101"
+      datastore = "dstore-1"
+      disks = [
+        {
+            label = "disk0"
+            size = 60
+        },
+        {
+            label = "disk1"
+            size = 500
+        }
+      ]
+      mem = 8192 
+      cpu = 3
+    }
+    "VM3" = {
+      hostname = "VM3"
+      ip_address = "10.1.122.102"
+      datastore = "dstore-1"
+      disks = [
+        {
+            label = "disk0"
+            size = 60
+        },
+        {
+            label = "disk1"
+            size = 500
+        }
+      ]
+      mem = 8192 
+      cpu = 3
+    }
+}
+`}
+      </CodeBlock>
+
+      <p>I also created a terraform module that handles the rest of my VM configuration.
+        This makes my terraform file nice and concise and easy to setup for my team members.
+        Here's an example: 
+      </p>
+
+      <CodeBlock language='javascript' title='main.tf'>
+
+ {`     terraform {
+  required_providers {
+    vsphere = {
+      source  = "vmware/vsphere"
+      version = "2.13.0"
+    }
+  }
+}
+
+provider "vsphere" {
+  # Configuration options
+  user                 = var.vsphere_user
+  password             = var.vsphere_password
+  vsphere_server       = var.vsphere_server
+  allow_unverified_ssl = true
+  api_timeout          = 10
+}
+
+module "linux_vms" {
+    source = "../../../modules/linux_VM"
+
+    vm_folder = "Prod/Logging-Monitoring"
+    resource_pool = "1 - High"
+    network = "10.1.122.x"
+    subnet = "23"
+    gateway = "10.1.122.1"
+    vm_configs = {
+        "VM01" = {
+          hostname   = "VM01"
+          ip_address = "10.1.122.100"
+          datastore = "Datastore-1"
+          disks      = [
+            {
+                label = "disk0"
+                size = 60
+            },            
+            { 
+                label = "disk1"
+                size = 50
+            }
+          ]
+          mem        = 8192
+          cpu        = 3
+}
+`} 
+      </CodeBlock>
+
+      <h2>Let's wrap it up</h2>
+      <p>
+        Once the VMs are provisioned I then follow up with ansible to finish up configuration.
+        Unlike the configuration bash script I can run our ansible playbooks against all the 
+        VMs that were just created at the same time. This saves a lot of time and it ensures
+        that they are all configured the same way.
+      </p>
+
+      <p>
+        One thing I've been meaning to look into and test out is triggering ansible playbooks
+        via cloud-init. The way I understand it you would install ansible on the server via cloud-init 
+        and then pull down your playbooks from a git repository and run them. 
+      </p>
+
     </BlogLayout>
   )
 }
