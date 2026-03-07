@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import BlogLayout from '../../components/BlogLayout'
-import Callout from '../../components/mdx/Callout'
-import CodeBlock from '../../components/mdx/CodeBlock'
+//import Callout from '../../components/mdx/Callout'
+//import CodeBlock from '../../components/mdx/CodeBlock'
 
 export const Route = createFileRoute('/blog/ingress-nginx')({
   component: nginxPost,
