@@ -10,7 +10,7 @@ const blogPosts = [
     date: '2026-01-27',
     excerpt: 'Deploying linux VMs in VMware using cloud-init, terraform and ansible.',
     tags: ['vmware', 'cloud-init', 'terraform', 'iaac', 'esxi'],
-    readingTime: '3 min read',
+    readingTime: '5 min read',
   },
 ]
 
@@ -24,12 +24,9 @@ function BlogIndex() {
       <section className="pt-32 pb-20 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="mb-12">
-            <h1 className="text-5xl font-bold text-gray-900 mb-4">
-              Blog
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              Thoughts on Infrastructure, DevOps, and Automation
             </h1>
-            <p className="text-xl text-gray-600">
-              Thoughts on infrastructure, DevOps, and automation
-            </p>
           </div>
 
           <div className="space-y-6">
