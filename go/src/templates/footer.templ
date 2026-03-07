@@ -1,0 +1,9 @@
+package templates
+
+import "time"
+
+templ Footer() {
+	<footer class="footer">
+		<p>&copy; { time.Now().Format("2006") } Folio. Built with Go, Templ, and Datastar.</p>
+	</footer>
+}

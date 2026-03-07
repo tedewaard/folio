@@ -1,0 +1,20 @@
+package templates
+
+import "github.com/tedewaard/folio/src/models"
+
+templ BlogList(posts []models.BlogPost) {
+	@Base("Blog - Folio") {
+		<div class="blog-list-container">
+			<h1>Blog</h1>
+			if len(posts) == 0 {
+				<p>No blog posts yet. Check back soon!</p>
+			} else {
+				<div class="blog-grid">
+					for _, post := range posts {
+						@BlogCard(post)
+					}
+				</div>
+			}
+		</div>
+	}
+}

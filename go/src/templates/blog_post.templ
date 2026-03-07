@@ -1,0 +1,27 @@
+package templates
+
+import "github.com/tedewaard/folio/src/models"
+
+templ BlogPost(post models.BlogPost) {
+	@Base(post.Metadata.Title + " - Folio") {
+		<article class="blog-post">
+			<header class="blog-post-header">
+				<h1>{ post.Metadata.Title }</h1>
+				<div class="blog-meta">
+					<time datetime={ post.Metadata.Date.Format("2006-01-02") }>
+						{ post.Metadata.Date.Format("January 2, 2006") }
+					</time>
+					<span class="reading-time">{ post.Metadata.ReadingTime }</span>
+				</div>
+				<div class="tags">
+					for _, tag := range post.Metadata.Tags {
+						<span class="tag">{ tag }</span>
+					}
+				</div>
+			</header>
+			<div class="blog-content">
+				@templ.Raw(string(post.Content))
+			</div>
+		</article>
+	}
+}

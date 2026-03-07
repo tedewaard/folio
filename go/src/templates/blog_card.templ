@@ -1,0 +1,21 @@
+package templates
+
+import "github.com/tedewaard/folio/src/models"
+
+templ BlogCard(post models.BlogPost) {
+	<article class="blog-card">
+		<h2><a href={ templ.SafeURL("/blog/" + post.Slug) }>{ post.Metadata.Title }</a></h2>
+		<div class="blog-meta">
+			<time datetime={ post.Metadata.Date.Format("2006-01-02") }>
+				{ post.Metadata.Date.Format("January 2, 2006") }
+			</time>
+			<span class="reading-time">{ post.Metadata.ReadingTime }</span>
+		</div>
+		<p class="excerpt">{ post.Metadata.Excerpt }</p>
+		<div class="tags">
+			for _, tag := range post.Metadata.Tags {
+				<span class="tag">{ tag }</span>
+			}
+		</div>
+	</article>
+}
