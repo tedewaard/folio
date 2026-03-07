@@ -9,7 +9,7 @@ const blogPosts = [
     title: 'VMware, Cloud-Init & Terraform',
     date: '2026-01-27',
     excerpt: 'Deploying linux VMs in VMware using cloud-init, terraform and ansible.',
-    tags: ['meta', 'welcome'],
+    tags: ['vmware', 'cloud-init', 'terraform', 'iaac', 'esxi'],
     readingTime: '3 min read',
   },
 ]
