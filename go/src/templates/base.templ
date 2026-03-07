@@ -7,12 +7,12 @@ templ Base(title string) {
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<title>{ title }</title>
-			<link rel="stylesheet" href="/static/css/styles.css"/>
+			<link rel="stylesheet" href="/static/css/output.css"/>
 			<script src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar"></script>
 		</head>
-		<body>
+		<body class="bg-gray-50 min-h-screen flex flex-col">
 			@Nav()
-			<main>
+			<main class="flex-1">
 				{ children... }
 			</main>
 			@Footer()

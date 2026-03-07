@@ -6,6 +6,7 @@ A modern portfolio website built with Go, Templ, and Datastar.
 
 - **Go 1.26.1** - Backend language
 - **Templ** - Type-safe HTML templating
+- **Tailwind CSS** - Utility-first CSS framework
 - **Datastar** - Hypermedia-driven interactivity
 - **chi** - HTTP router
 - **AsciiDoc** - Blog content format
@@ -29,11 +30,16 @@ go/
 │   ├── services/            # Business logic
 │   ├── middleware/          # HTTP middleware
 │   ├── templates/           # Templ templates
-│   └── static/              # CSS, JS, images
+│   └── static/
+│       └── css/
+│           ├── input.css    # Tailwind input (directives)
+│           └── output.css   # Generated Tailwind CSS
 ├── content/
 │   └── blog/                # AsciiDoc blog posts
 ├── bin/                     # Compiled binaries
 ├── tmp/                     # Air temporary files
+├── tailwindcss              # Tailwind CLI binary
+├── tailwind.config.js       # Tailwind configuration
 ├── go.mod                   # Go dependencies
 └── .air.toml                # Hot reload config
 ```
@@ -83,6 +89,63 @@ Or set custom configuration:
 ```bash
 PORT=8080 ENVIRONMENT=production ./bin/server
 ```
+
+## Styling with Tailwind CSS
+
+This project uses Tailwind CSS for styling. The workflow is fully automated with Air's hot reload.
+
+### How It Works
+
+1. **Input CSS** (`src/static/css/input.css`): Contains Tailwind directives
+2. **Tailwind CLI**: Scans templates for class names and generates CSS
+3. **Output CSS** (`src/static/css/output.css`): Optimized CSS served to browsers
+
+### Adding Custom Styles
+
+Edit `src/static/css/input.css`:
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Your custom CSS here */
+@layer components {
+  .btn-custom {
+    @apply px-4 py-2 bg-blue-500 text-white rounded;
+  }
+}
+```
+
+### Tailwind Configuration
+
+Customize Tailwind in `tailwind.config.js`:
+
+```javascript
+module.exports = {
+  content: [
+    "./src/templates/**/*.templ",
+    "./src/templates/**/*.go",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        brand: '#your-color',
+      },
+    },
+  },
+}
+```
+
+### Manual Rebuild
+
+If you need to manually rebuild Tailwind CSS:
+
+```bash
+./tailwindcss -i ./src/static/css/input.css -o ./src/static/css/output.css --minify
+```
+
+Air automatically rebuilds Tailwind when you change `.templ`, `.go`, or `.css` files.
 
 ## Adding Blog Posts
 

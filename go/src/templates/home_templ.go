@@ -41,7 +41,7 @@ func HomePage() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"home-container\"><h1>Welcome to Folio</h1><p>A modern portfolio website built with Go, Templ, and Datastar.</p><div class=\"home-links\"><a href=\"/blog\" class=\"btn-primary\">View Blog</a></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"text-center py-16 px-4\"><h1 class=\"text-5xl font-bold text-gray-900 mb-4\">Welcome to Folio</h1><p class=\"text-xl text-gray-600 mb-8\">A modern portfolio website built with Go, Templ, and Datastar.</p><div class=\"mt-8 flex bg-\"><a href=\"/blog\" class=\"inline-block px-8 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-700 transition\">View Blog</a></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
