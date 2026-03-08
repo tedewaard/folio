@@ -34,7 +34,7 @@ func Load() *Config {
 
 	staticDir := os.Getenv("STATIC_DIR")
 	if staticDir == "" {
-		staticDir = "./static"
+		staticDir = "./src/static"
 	}
 
 	return &Config{
